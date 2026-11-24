@@ -1,6 +1,6 @@
 {
-  "name": "АП-Диагност — агрессивный пародонтит",
-  "short_name": "АП-Диагност",
+  "name": "PerioScope — агрессивный пародонтит",
+  "short_name": "PerioScope",
   "description": "Диагностика и план лечения агрессивного пародонтита. EMU University.",
   "lang": "ru",
   "start_url": "./index.html",
