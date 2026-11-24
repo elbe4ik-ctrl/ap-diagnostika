@@ -39,7 +39,7 @@ nav.steps button .n{width:24px;height:24px;border-radius:50%;display:grid;place-
 nav.steps button.active{color:#fff;border-bottom-color:#fff}
 nav.steps button.done .n{background:#fff;color:var(--deep)}
 nav.steps button:disabled{opacity:.45;cursor:not-allowed}
-main{max-width:1080px;margin:0 auto;padding:18px 16px 120px}
+main{max-width:1080px;margin:0 auto;padding:18px 16px 220px}
 .patient-bar{display:flex;flex-wrap:wrap;gap:10px;align-items:end;background:var(--light);border:1px solid var(--line);border-radius:var(--radius);padding:12px 14px;margin-bottom:16px}
 .patient-bar .f{flex:1 1 180px}
 h2.sec{font-size:22px;margin:6px 0 4px;color:var(--deep);font-weight:800}
@@ -73,6 +73,10 @@ p.lead{margin:0 0 16px;color:var(--muted)}
 .btn.ghost{background:#fff;border:1.5px solid var(--line);color:var(--deep)}
 .btn.ghost:hover{border-color:var(--accent)}
 .btn:disabled{opacity:.5;cursor:not-allowed}
+.actions .in{align-items:center}
+.act-hint{flex:1 1 320px;display:flex;gap:10px;align-items:flex-start;background:var(--light);border:1px solid var(--line);border-left:4px solid var(--accent);color:var(--deep);border-radius:10px;padding:9px 12px;font-size:14px;line-height:1.4}
+.act-hint svg{flex:none;margin-top:1px;color:var(--accent)}
+.req{color:var(--hi);font-weight:800}
 .verdict{border-radius:var(--radius);padding:18px;margin-bottom:14px;border:1.5px solid}
 .verdict.ok{background:var(--okbg);border-color:#9FD3B4}
 .verdict.warn{background:var(--warnbg);border-color:#F5C77E}
@@ -155,7 +159,7 @@ dialog .db{padding:16px;max-height:70vh;overflow:auto}
     </div>
   </div>
   <nav class="steps" id="steps">
-    <button data-step="1"><span class="n">1</span>Быстрая проверка</button>
+    <button data-step="1"><span class="n">1</span>Первичная диагностика</button>
     <button data-step="2" disabled><span class="n">2</span>Расширенная диагностика</button>
     <button data-step="3" disabled><span class="n">3</span>Окончательный диагноз</button>
     <button data-step="4" disabled><span class="n">4</span>План лечения</button>
