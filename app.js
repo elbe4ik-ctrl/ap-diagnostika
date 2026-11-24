@@ -74,6 +74,7 @@ let P = blank();
 let step = 1;
 
 function persist(){
+  if (P.demo) return;   // демо-пациенты не сохраняются в список
   P.updated = Date.now();
   const list = loadAll().filter(x => x.id !== P.id);
   if (P.name || Object.keys(P.s1).length) { list.unshift(P); saveAll(list.slice(0, 500)); }
@@ -358,6 +359,7 @@ function renderStep1(){
 
   <div id="s1v"></div>`;
   updateS1();
+  welcome();
 }
 
 const S1TEXT = {
@@ -550,9 +552,57 @@ function showAlgo(){
   <p class="note src">Медианы до лечения из главы 3 диссертации; схема разграничения — рис. 7.1; прогноз — выводы 3 и 9.</p>`);
 }
 
+/* ---------- Демо и справка ---------- */
+const DEMO = {
+  j: {name:'Демо: юношеская форма', s1:{age:'15', dur:'2', sex:'f', pd:'5,3', cal:'6,2', pbi:'2,5', pma:'58', ohis:'2,5', pi:'5,3', mob:'1,15', kpi:'2,8', bone:'25', teeth:'40', lost:'0', pattern:'mi', s_disprop:true, s_early:true},
+      s2:{M:'16,4', sig:'1,5', kv:'10,1', sm:'3,3', spo2:'92', cd3:'56', cd4:'36,9', cd8:'28,4', cd48:'1,3', cd20:'11,1', igm_s:'9,4', cik:'71', fal:'41', iga:'0,19', siga:'0,48', igg:'0,11', il1:'230', il4:'40', tnf:'410', amoeb:'54', fungi:'3'}},
+  r: {name:'Демо: быстропрогрессирующая форма', s1:{age:'17', dur:'3', sex:'m', pd:'6,2', cal:'7,1', pbi:'3,6', pma:'72', ohis:'3,2', pi:'5,9', mob:'1,3', kpi:'3,2', bone:'40', teeth:'45', lost:'0', pattern:'gen', s_disprop:true, s_family:true},
+      s2:{M:'13,5', sig:'1,1', kv:'8,8', sm:'3,1', spo2:'90,4', cd3:'59', cd4:'34', cd8:'30,8', cd48:'1,1', cd20:'8,1', igm_s:'11,4', cik:'90', fal:'37', iga:'0,18', siga:'0,42', igg:'0,22', il1:'420', il4:'12,5', tnf:'780', amoeb:'63', fungi:'5'}},
+};
+function loadDemo(k){
+  const d = DEMO[k];
+  P = Object.assign(blank(), {id:'demo-' + k, name:d.name, card:'ДЕМО', s1:{...d.s1}, s2:{...d.s2}, confirmed:true, s2seen:true, demo:true});
+  $('#dlg').open && $('#dlg').close();
+  step = 1; go(1);
+}
+function showHelp(){
+  dialog('Как пользоваться', `
+  <p><b>АП-Диагност</b> помогает стоматологу поставить диагноз агрессивного пародонтита у подростков и молодых людей (14–19 лет), отличить юношескую форму от быстропрогрессирующей и получить готовый план лечения. Основа — диссертационное исследование 180 пациентов (EMU University, Самаркандский ГМУ).</p>
+  <p><b>Четыре шага:</b></p>
+  <ol>
+    <li><b>Быстрая проверка</b> — то, что видно в кресле и на снимке. Программа сразу скажет, подтверждается ли диагноз.</li>
+    <li><b>Расширенная диагностика</b> — открывается при подтверждённом диагнозе: иммунограмма, цитокины, микроциркуляция, микрофлора. Можно вносить не всё.</li>
+    <li><b>Окончательный диагноз</b> — форма, тяжесть, стадия, нарушенные звенья и прогноз.</li>
+    <li><b>План лечения</b> — пошаговая схема и контроль через 15 дней, 1 и 3 месяца. Кнопка «Печать / PDF».</li>
+  </ol>
+  <p><b>Попробуйте на примере:</b></p>
+  <div class="seg" style="margin-bottom:12px"><label id="hDemoJ">Юношеская форма</label><label id="hDemoR">Быстропрогрессирующая форма</label></div>
+  <p><b>Версии:</b> Windows и macOS (Chrome или Edge → значок «Установить» в адресной строке), Android (Chrome → ⋮ → «Установить приложение»), iPhone и iPad (Safari → «Поделиться» → «На экран „Домой“»). После первого открытия работает без интернета.</p>
+  <p class="note info">Данные пациентов хранятся только на этом устройстве и никуда не отправляются. Дозы препаратов — по протоколам МЗ РУз. Решение всегда за врачом.</p>`);
+  $('#dlgBody').insertAdjacentHTML('beforeend', '<button class="btn ghost" id="hAlgo" style="margin-top:8px">Подробно об алгоритме и порогах</button>');
+  $('#hDemoJ').onclick = () => loadDemo('j');
+  $('#hDemoR').onclick = () => loadDemo('r');
+  $('#hAlgo').onclick = showAlgo;
+}
+function welcome(){
+  if (step !== 1 || P.name || Object.keys(P.s1).length) return;
+  const box = document.createElement('div');
+  box.className = 'verdict brand noprint';
+  box.innerHTML = `<div class="k">Впервые здесь?</div><div class="v" style="font-size:20px">Посмотрите, как работает программа, на готовом примере</div>
+    <p>Откроется пациент с уже внесёнными данными — пройдите все 4 шага кнопками внизу.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;position:relative;z-index:1">
+      <button class="btn ghost" id="wDemoJ">Пример: юношеская форма</button>
+      <button class="btn ghost" id="wDemoR">Пример: быстропрогрессирующая</button>
+      <button class="btn ghost" id="wHelp">Как пользоваться</button></div>`;
+  main.prepend(box);
+  $('#wDemoJ').onclick = () => loadDemo('j');
+  $('#wDemoR').onclick = () => loadDemo('r');
+  $('#wHelp').onclick = showHelp;
+}
+
 $('#steps').addEventListener('click', e => { const b = e.target.closest('button'); if (b && !b.disabled) go(+b.dataset.step); });
 $('#btnPatients').onclick = showPatients;
-$('#btnAlgo').onclick = showAlgo;
+$('#btnAlgo').onclick = showHelp;
 $('#btnNew').onclick = () => { if (!P.name && !Object.keys(P.s1).length || confirm('Начать нового пациента? Текущий сохранён в списке.')) { P = blank(); step = 1; go(1); } };
 
 go(1);
